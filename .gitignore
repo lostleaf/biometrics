@@ -2,3 +2,9 @@
 *.log
 *.synctex.gz
 .DS_Store
+bio/*
+/bio/*
+/dev/*
+dev/*
+assignment2/2008-03-11_13-2/*
+assignment2/~$signment2.docx
