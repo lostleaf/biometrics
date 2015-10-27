@@ -7,8 +7,8 @@ import os
 
 def find_location_to_process(rootDir):
     list_dirs = os.walk(rootDir)
+    count = 0
     for root, dirs, files in list_dirs:
-        count = 0
         for f in files:
             if f[-4:]=='tiff':
                 print os.path.join(root, f)
@@ -29,6 +29,8 @@ def fit_circle(im, cx, cy, cl, is_pupil):
                 cur = []
                 prex, prey = None, None
                 for theta in np.linspace(0, 2*np.pi, 600):
+                    if np.cos(theta) > -0.2 and np.cos(theta) < 0.2:
+                        continue
                     if not is_pupil and np.cos(theta) > -0.7 and np.cos(theta) < 0.7:
                         continue
                     xx, yy = int(round(x + r * np.sin(theta))), int(round(y + r * np.cos(theta)))
@@ -60,6 +62,7 @@ def image_process(im_path,count):
     cv2.circle(im, (iy, ix), ir, 255, thickness=1)
     plt.imshow(im, cmap='gray')
     # plt.show()
+    print count
     plt.savefig(str(count)+'_hw.tiff')
 
 def test():
