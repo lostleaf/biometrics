@@ -8,3 +8,10 @@ bio/*
 dev/*
 assignment2/2008-03-11_13-2/*
 assignment2/~$signment2.docx
+*/*/*.pyc
+/assignment2/p2/*.pyc
+/assignment2/p2/*.tiff
+assignment2/p2/*.pyc
+assignment2/p2/*.tiff
+assignment2/*.pyc
+*.pyc

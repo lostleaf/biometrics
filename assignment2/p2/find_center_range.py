@@ -6,8 +6,6 @@ def find_center_range(im, length_low=20, length_high=38):
     im_h, im_l = im.shape
     avg_min, ans_x, ans_y, ans_l = None, None, None, None
     im = cv2.morphologyEx(im, cv2.MORPH_OPEN, None)
-    # plt.imshow(im, cmap='gray')
-    # plt.show()
     for l in xrange(length_low, length_high):
         for x in xrange(0, im_h - l):
             for y in xrange(0, im_l - l):
@@ -19,6 +17,7 @@ def find_center_range(im, length_low=20, length_high=38):
 
 def test():
     im_path = "04252d427.tiff"
+    # im_path = "/Volumes/Untitled/2008-03-11_13/05176/05176d354.tiff"
     im = cv2.imread(im_path, cv2.IMREAD_GRAYSCALE)
     im = cv2.resize(im, (160, 120))
     x, y, l = find_center_range(im)
