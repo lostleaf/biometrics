@@ -18,13 +18,13 @@ def find_center_range(im, length_low=20, length_high=38):
     return ans_x, ans_y, ans_l
 
 def test():
-    im_path = "/Volumes/Untitled/2008-03-11_13/04537/04537d1374.tiff"
+    im_path = "04252d427.tiff"
     im = cv2.imread(im_path, cv2.IMREAD_GRAYSCALE)
     im = cv2.resize(im, (160, 120))
     x, y, l = find_center_range(im)
     cv2.rectangle(im, (y, x), (y + l, x + l), 255)
     plt.imshow(im, cmap='gray')
     plt.show()
-    
+
 if __name__ == "__main__":
     test()
