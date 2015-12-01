@@ -13,7 +13,7 @@ def evaluate(scorefile):
 
     total = len(scores)
     print total
-    
+
     metrics = []
     for thres in np.arange(0.6, 0.9, 0.005, dtype = np.float16):
         TP = 0
@@ -35,14 +35,27 @@ def evaluate(scorefile):
 
         Precision = float( TP + FClaim - FP) / total
 
-        metrics.append(tuple([thres, TP, TClaim, FP, FClaim, Precision]))
+        TPR = float(TP)/TClaim
+        FPR = float(FP)/FClaim
+
+        metrics.append(tuple([thres, TP, TClaim, FP, FClaim, Precision,TPR,FPR]))
         #print thres, TP, TClaim, FN, FClaim, Precision
 
     return metrics
 
-met = evaluate('./result/eyes_landmark_orb_scores.npz')
-for m in met:
-    print m
+def get_file_list(address):
+    address = str(address)
+    folder = os.listdir(address)
+    files = [k for k in folder]
+    return files
 
-np.save("./evaluation/eyes_landmark_orb_eval.npy", met)
-np.savetxt("./evaluation/eyes_landmark_orb_eval.txt", met)
+# print get_file_list('./result')
+for name in get_file_list('./result'):
+    if name == '.DS_Store':
+        continue
+    met = evaluate('./result/'+name)
+    for m in met:
+        print m
+
+    # np.save("./tpr/eyes_landmark_orb_eval.npy", met)
+    np.savetxt("./tpr/"+name+".txt", met)
