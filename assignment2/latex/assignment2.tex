@@ -62,7 +62,7 @@
 \newtheorem{prop}{Proposition}
 \date{}
 \title{EECS 495 Biometrics Assignment2}
-\author{Qinglin Li, EMPL ID: 2923742, Net ID: qlt073\\ Nianzu Li, EMPL ID: 2906237, Net ID: nld118\\ Xiangyu Ji,}
+\author{Qinglin Li, EMPL ID: 2923742, Net ID: qlt073\\ Nianzu Li, EMPL ID: 2906237, Net ID: nld118\\ Xiangyu Ji, EMPL ID: 2930280, Net ID: XJQ158}
 \begin{document}
 \maketitle
 \section*{Problem 1}
@@ -70,4 +70,13 @@ The hough space, red region indicates the parameter space:\\
 \includegraphics[scale =1]{p1-voting-crop}\\
 The fitted circles: (green, black, and blue pixels corresponds to circle, pixels on the circle and pixels not on the circle, respectively)\\
 \includegraphics[scale=0.8]{p1-circles-crop}
+
+\section*{Problem 2}
+We basically followed Daugman's method.\\
+First of all, to speed up the whole process, we resized the image to $\frac{1}{4}$ of its original size.
+We then found the range of center of pupil by detecting the blackest region with a square sliding window.
+Next, we used integro-differential operator to fit two circles which corresponds to pupil and iris.
+Finally,we drew the fitted circle on the original image.\\
+We used Python and OpenCV in this problem.
+The input and output path is specified by the variables \textit{srcdir} and \textit{dstdir} in line 98 and 99 of \textit{fit\_circle\_orig.py}
 \end{document}
