@@ -26,13 +26,14 @@ class TooManyFaces(Exception):
 class NoFaces(Exception):
     pass
 
+def detect_face(im):
+    return dlib_detector(im, 1)
+
 def get_landmarks(im):
     rects = dlib_detector(im, 1)
     
     if len(rects) == 0:
         return np.matirx([])
-    if len(rects) > 1:
-        cv2.imsave("manyFaces.tiff", im)
 
     return np.matrix([[p.x, p.y] for p in dlib_predictor(im, rects[0]).parts()])
 
@@ -157,4 +158,44 @@ def detectKeyPoints(im, mask=None, featureType="SIFT"):
 def computeFeature(im, points, mask=None, featureType="SIFT"):
     descriptor = cv2.DescriptorExtractor_create(featureType)
     return descriptor.compute(im, points)
+
+def get_face_mask(im, rect, landmarks):
+    x = rect.left()
+    y = rect.top()
+    w = rect.width()
+    h = rect.height()
+
+    mask = np.zeros(im.shape[:2], np.uint8)
+    contour = np.array(list(landmarks[JAW_POINTS])+[np.matrix((x,y)),np.matrix((x+w,y))])
+
+    region = cv2.convexHull(contour)
+    cv2.fillPoly(mask,[region],1)
+
+    eyes = landmarks[LEFT_EYE_POINTS+RIGHT_EYE_POINTS+RIGHT_BROW_POINTS+LEFT_BROW_POINTS]
+    lefteye = cv2.convexHull(landmarks[LEFT_BROW_POINTS+LEFT_EYE_POINTS])
+    lefteye = np.int0(cv2.cv.BoxPoints(cv2.minAreaRect(lefteye)))
+
+    righteye = cv2.convexHull(landmarks[RIGHT_BROW_POINTS+RIGHT_EYE_POINTS])
+    righteye = np.int0(cv2.cv.BoxPoints(cv2.minAreaRect(righteye)))
+
+    nose = cv2.convexHull(landmarks[NOSE_POINTS])
+    mouth = cv2.convexHull(landmarks[MOUTH_POINTS])
+
+    cv2.fillPoly(mask, [lefteye, righteye, nose, mouth], 0)
+    #cv2.fillPoly(mask, [eyes, nose, mouth], 0)
+
+    kernel = np.ones((5,5),np.uint8)
+    mask = cv2.erode(mask, kernel)
+    return mask
+
+def detectAndCompute(im, mask=None, featureType="SIFT"):
+
+    sift = cv2.SIFT()
+    surf = cv2.SURF()
+    brisk = cv2.BRISK()
+    orb = cv2.ORB()
+
+    agent = {"SIFT":sift, "SURF":surf, "BRISK":brisk, "ORB":orb}
     
+    computer = agent[featureType]
+    return computer.detectAndCompute(im, mask)

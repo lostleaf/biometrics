@@ -42,7 +42,7 @@ def process(feaType, start = 0, end =5000):
 
     templatepath = "./model/template_landmark.npy"
 
-    dstDir = os.path.join("./data", feaType)
+    dstDir = os.path.join("data2", feaType)
     if not os.path.exists(dstDir):
         os.mkdir(dstDir)
 
@@ -53,7 +53,7 @@ def process(feaType, start = 0, end =5000):
     features = []
     for row in piclist:
         i += 1
-        if i < start:
+        if i < start or i==2559:
             continue
         if i > end:
             break
@@ -76,16 +76,39 @@ def process(feaType, start = 0, end =5000):
         im = flib.warp_im(im, M, im.shape)
 
         landmarks = flib.get_landmarks(im)
-        
+
+        # feature of landmarks
+        """
         kps = flib.KeyPoint_convert(landmarks[FACE_POINTS])
         kps, fea = flib.computeFeature(im, kps, None, feaType)
+        """
 
+        # feature of non-landmarks region
+        rects = flib.detect_face(im)
+        if len(rects) > 1:
+            print "Many faces"
+            face = im
+            for rect in rects:
+                x = rect.left()
+                y = rect.top()
+                w = rect.width()
+                h = rect.height()
+                cv2.rectangle(face, (x, y), (x+w, y+h), (0, 255, 0), 2)
+            cv2.imwrite("{0}.tiff".format(i),face)
+        elif len(rects) == 0:
+            continue
+
+        mask = flib.get_face_mask(im, rects[0],landmarks)
+        kps, fea = flib.detectAndCompute(im, mask, feaType)
+        
         # save
         dstname = "frontface_landmarks_{0}.npz".format(picname.split(".")[0])
         dstpath = os.path.join(dstDir,dstname)
 
+
         pts, des = pack_keypoint(kps, fea)
         np.savez(dstpath, points_array = pts, feature_array = des)
+        
         """
         keypoints.append(kps)
         features.append(fea)
