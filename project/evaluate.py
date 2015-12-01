@@ -15,7 +15,7 @@ def evaluate(scorefile):
     print total
 
     metrics = []
-    for thres in np.arange(0.6, 0.9, 0.005, dtype = np.float16):
+    for thres in np.arange(0.4, 0.9, 0.005, dtype = np.float16):
         TP = 0
         TClaim = 0
         FP = 0
